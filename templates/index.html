@@ -1,0 +1,60 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="text-center mb-5">
+            <h1 class="display-4">RL-Based CPU Scheduler</h1>
+            <p class="lead">
+                An AI-driven approach to optimize CPU scheduling for high-frequency trading and real-time systems
+            </p>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="row mb-3">
+    <div class="col-12">
+        <div class="card bg-dark border-light">
+            <div class="card-body">
+                <h2 class="card-title mb-4">Get Started</h2>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="text-center mb-4">
+                            <div class="bg-secondary bg-opacity-25 rounded-circle d-inline-block p-3 mb-3">
+                                <i class="fas fa-cogs fa-3x text-primary"></i>
+                            </div>
+                            <h4>1. Configure</h4>
+                            <p>Set up your simulation parameters including workload type, number of CPUs, and tasks.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center mb-4">
+                            <div class="bg-secondary bg-opacity-25 rounded-circle d-inline-block p-3 mb-3">
+                                <i class="fas fa-graduation-cap fa-3x text-primary"></i>
+                            </div>
+                            <h4>2. Train</h4>
+                            <p>Train the RL agent to learn optimal scheduling policies for your workload.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center mb-4">
+                            <div class="bg-secondary bg-opacity-25 rounded-circle d-inline-block p-3 mb-3">
+                                <i class="fas fa-chart-bar fa-3x text-primary"></i>
+                            </div>
+                            <h4>3. Analyze</h4>
+                            <p>Compare performance with traditional schedulers and visualize the results.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-3">
+                    <a href="{{ url_for('simulation') }}" class="btn btn-lg btn-primary">
+                        <i class="fas fa-rocket me-2"></i>Launch Simulator
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

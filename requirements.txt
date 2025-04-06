@@ -1,0 +1,11 @@
+email-validator
+flask
+flask-sqlalchemy
+gunicorn
+gym
+matplotlib
+numpy
+pandas
+psycopg2-binary
+seaborn
+tensorflow

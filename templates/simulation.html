@@ -1,0 +1,225 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8 offset-md-2">
+        <div class="text-center">
+            <h1>CPU Scheduler Simulation</h1>
+            <p class="lead">Configure your simulation parameters and train the reinforcement learning model</p>
+        </div>
+    </div>
+</div>
+
+{% if train %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card bg-dark border-light">
+            <div class="card-body">
+                <h2 class="card-title mb-4">Train RL Scheduler</h2>
+                
+                <div id="form_error" class="alert alert-danger d-none" role="alert"></div>
+                
+                <form id="training_form" action="{{ url_for('train') }}" method="post">
+                    <div class="form-section">
+                        <h4 class="form-section-title">Training Parameters</h4>
+                        
+                        <div class="mb-3">
+                            <label for="num_episodes" class="form-label">Number of Training Episodes</label>
+                            <input type="number" class="form-control" id="num_episodes" name="num_episodes" 
+                                   min="10" max="1000" value="100" required>
+                            <div class="form-text">
+                                Higher values will result in better learning but take longer to train.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg" onclick="startTraining()">
+                            <i class="fas fa-play-circle me-2"></i>Start Training
+                        </button>
+                    </div>
+                </form>
+                
+                <div id="training_status" class="training-status d-none">
+                    <h4>Training in Progress...</h4>
+                    <p>This may take a few moments. Please don't close this page.</p>
+                    
+                    <div class="progress mb-3">
+                        <div id="training_progress" class="progress-bar progress-bar-striped progress-bar-animated" 
+                             role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                            <span id="progress_text">0%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        <a id="view_results_btn" href="{{ url_for('results') }}" class="btn btn-success" disabled>
+                            <i class="fas fa-chart-bar me-2"></i>View Results
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% else %}
+<!-- Simulation Configuration Form -->
+<div class="row">
+    <div class="col-md-10 offset-md-1">
+        <div class="card bg-dark border-light">
+            <div class="card-body">
+                <h2 class="card-title mb-4">Simulation Configuration</h2>
+                
+                <div id="form_error" class="alert alert-danger d-none" role="alert"></div>
+                
+                <form id="simulation_form" action="{{ url_for('simulation') }}" method="post">
+                    <!-- Environment Parameters -->
+                    <div class="form-section">
+                        <h4 class="form-section-title">Environment Parameters</h4>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="num_cpus" class="form-label">Number of CPU Cores</label>
+                                <input type="number" class="form-control" id="num_cpus" name="num_cpus" 
+                                       min="1" max="16" value="{{ default_values.num_cpus|default(4) }}" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="num_tasks" class="form-label">Number of Tasks</label>
+                                <input type="number" class="form-control" id="num_tasks" name="num_tasks" 
+                                       min="10" max="1000" value="{{ default_values.num_tasks|default(100) }}" required>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="workload_type" class="form-label">Workload Type</label>
+                            <select class="form-select" id="workload_type" name="workload_type" required>
+                                <option value="trading" {% if default_values.workload_type == 'trading' or not default_values.workload_type %}selected{% endif %}>High-Frequency Trading</option>
+                                <option value="realtime" {% if default_values.workload_type == 'realtime' %}selected{% endif %}>Real-time System</option>
+                                <option value="mixed" {% if default_values.workload_type == 'mixed' %}selected{% endif %}>Mixed Workload</option>
+                            </select>
+                            <div id="workload_description" class="form-text">
+                                High-frequency trading workload with a mix of short, latency-sensitive tasks and longer analysis tasks.
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Reward Function Weights</label>
+                            <div class="mb-2">
+                                <input type="range" class="form-range" id="reward_latency_weight_slider" 
+                                       min="0" max="1" step="0.01" value="{{ default_values.reward_latency_weight|default(0.7) }}">
+                            </div>
+                            <div id="reward_ratio_display" class="reward-ratio">
+                                {{ (default_values.reward_latency_weight|default(0.7) * 100)|int }}% Latency / {{ (default_values.reward_throughput_weight|default(0.3) * 100)|int }}% Throughput
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <label for="reward_latency_weight" class="form-label">Latency Weight</label>
+                                    <input type="number" class="form-control" id="reward_latency_weight" 
+                                           name="reward_latency_weight" min="0" max="1" step="0.01" 
+                                           value="{{ default_values.reward_latency_weight|default(0.7) }}" readonly>
+                                </div>
+                                <div class="col-6">
+                                    <label for="reward_throughput_weight" class="form-label">Throughput Weight</label>
+                                    <input type="number" class="form-control" id="reward_throughput_weight" 
+                                           name="reward_throughput_weight" min="0" max="1" step="0.01" 
+                                           value="{{ default_values.reward_throughput_weight|default(0.3) }}" readonly>
+                                </div>
+                            </div>
+                            <div class="form-text">
+                                Adjust the balance between minimizing latency and maximizing throughput in the reward function.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Reinforcement Learning Parameters -->
+                    <div class="form-section">
+                        <h4 class="form-section-title">RL Agent Parameters</h4>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="learning_rate" class="form-label">Learning Rate</label>
+                                <input type="number" class="form-control" id="learning_rate" name="learning_rate" 
+                                       min="0.0001" max="0.1" step="0.0001" value="{{ default_values.learning_rate|default(0.001) }}" required>
+                                <div class="form-text">
+                                    Controls how quickly the agent learns from new experiences.
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="gamma" class="form-label">Discount Factor (Gamma)</label>
+                                <input type="number" class="form-control" id="gamma" name="gamma" 
+                                       min="0.8" max="1" step="0.01" value="{{ default_values.gamma|default(0.99) }}" required>
+                                <div class="form-text">
+                                    Determines the importance of future rewards vs. immediate rewards.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label for="epsilon" class="form-label">Initial Exploration Rate (Epsilon)</label>
+                                <input type="number" class="form-control" id="epsilon" name="epsilon" 
+                                       min="0" max="1" step="0.01" value="{{ default_values.epsilon|default(1.0) }}" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="epsilon_min" class="form-label">Minimum Exploration Rate</label>
+                                <input type="number" class="form-control" id="epsilon_min" name="epsilon_min" 
+                                       min="0" max="0.5" step="0.01" value="{{ default_values.epsilon_min|default(0.01) }}" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="epsilon_decay" class="form-label">Exploration Decay Rate</label>
+                                <input type="number" class="form-control" id="epsilon_decay" name="epsilon_decay" 
+                                       min="0.9" max="1" step="0.001" value="{{ default_values.epsilon_decay|default(0.995) }}" required>
+                            </div>
+                        </div>
+                        <div class="form-text mb-3">
+                            Exploration parameters control how the agent balances exploring new actions vs. exploiting known good actions.
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="memory_size" class="form-label">Memory Size</label>
+                                <input type="number" class="form-control" id="memory_size" name="memory_size" 
+                                       min="1000" max="100000" step="1000" value="{{ default_values.memory_size|default(10000) }}" required>
+                                <div class="form-text">
+                                    How many experiences the agent can remember.
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="batch_size" class="form-label">Batch Size</label>
+                                <input type="number" class="form-control" id="batch_size" name="batch_size" 
+                                       min="16" max="256" step="8" value="{{ default_values.batch_size|default(64) }}" required>
+                                <div class="form-text">
+                                    Number of experiences used for each training update.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Traditional Scheduler Parameters -->
+                    <div class="form-section">
+                        <h4 class="form-section-title">Traditional Scheduler Parameters</h4>
+                        
+                        <div class="mb-3">
+                            <label for="time_quantum" class="form-label">Round Robin Time Quantum</label>
+                            <input type="number" class="form-control" id="time_quantum" name="time_quantum" 
+                                   min="1" max="10" value="{{ default_values.time_quantum|default(2) }}" required>
+                            <div class="form-text">
+                                Amount of time (in simulation units) each task runs before being preempted in Round Robin scheduling.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-cogs me-2"></i>Initialize Simulation
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+
+{% endblock %}

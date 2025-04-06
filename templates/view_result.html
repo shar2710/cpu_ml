@@ -1,0 +1,103 @@
+{% extends "layout.html" %}
+
+{% block title %}View Result{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col">
+            <h1>Simulation Result</h1>
+            <div class="card my-4">
+                <div class="card-header bg-dark text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">{{ result.scheduler_type }} Scheduler</h5>
+                        <span class="badge bg-info">{{ result.config.workload_type }}</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-muted">
+                        Run Date: {{ result.run_date.strftime('%Y-%m-%d %H:%M:%S') }}
+                    </h6>
+                    <p class="card-text">Configuration: {{ result.config.name }}</p>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <h5>Performance Metrics</h5>
+                            <table class="table table-striped">
+                                <tr>
+                                    <th>Average Latency</th>
+                                    <td>{{ result.avg_latency|round(4) }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Throughput</th>
+                                    <td>{{ result.throughput|round(4) }}</td>
+                                </tr>
+                                <tr>
+                                    <th>CPU Utilization</th>
+                                    <td>{{ (result.cpu_utilization * 100)|round(1) }}%</td>
+                                </tr>
+                                <tr>
+                                    <th>Total Reward</th>
+                                    <td>{{ result.total_reward|round(2) }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Completed Tasks</th>
+                                    <td>{{ result.completed_tasks }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Configuration Details</h5>
+                            <table class="table table-striped">
+                                <tr>
+                                    <th>Number of CPUs</th>
+                                    <td>{{ result.config.num_cpus }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Number of Tasks</th>
+                                    <td>{{ result.config.num_tasks }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Workload Type</th>
+                                    <td>{{ result.config.workload_type }}</td>
+                                </tr>
+                                {% if result.scheduler_type == "RL" %}
+                                <tr>
+                                    <th>Learning Rate</th>
+                                    <td>{{ result.config.learning_rate }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Gamma (Discount)</th>
+                                    <td>{{ result.config.gamma }}</td>
+                                </tr>
+                                {% endif %}
+                                {% if result.scheduler_type == "RoundRobin" %}
+                                <tr>
+                                    <th>Time Quantum</th>
+                                    <td>{{ result.config.time_quantum }}</td>
+                                </tr>
+                                {% endif %}
+                            </table>
+                        </div>
+                    </div>
+                    
+                    {% if plots and plots.training %}
+                    <div class="row mt-4">
+                        <div class="col">
+                            <h5>Training History</h5>
+                            <img src="data:image/png;base64,{{ plots.training }}" class="img-fluid" alt="Training Rewards">
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="card-footer">
+                    <a href="{{ url_for('view_config', config_id=result.config.id) }}" class="btn btn-primary">View Full Configuration</a>
+                    <a href="{{ url_for('db_management') }}" class="btn btn-secondary">Back to Database</a>
+                    <a href="{{ url_for('delete_result', result_id=result.id) }}" class="btn btn-danger float-end" 
+                       onclick="return confirm('Are you sure you want to delete this result?');">Delete</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

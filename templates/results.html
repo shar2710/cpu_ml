@@ -1,0 +1,237 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8 offset-md-2">
+        <div class="text-center">
+            <h1>Simulation Results</h1>
+            <p class="lead">Comparing RL-based scheduler performance with traditional scheduling algorithms</p>
+        </div>
+    </div>
+</div>
+
+<!-- Key Metrics Overview -->
+<div class="row mb-5">
+    <div class="col-md-10 offset-md-1">
+        <div class="card bg-dark border-light">
+            <div class="card-header">
+                <h3 class="mb-0">Key Performance Metrics</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% for scheduler, data in results.items() %}
+                    <div class="col-md-3 mb-4">
+                        <div class="card h-100 scheduler-card scheduler-{{ scheduler }} bg-dark border-{{ 'primary' if scheduler == 'RL' else 'light' }}">
+                            <div class="card-header {{ 'text-primary' if scheduler == 'RL' else '' }}">{{ scheduler }} Scheduler</div>
+                            <div class="card-body text-center">
+                                <div class="mb-3">
+                                    <p class="text-muted mb-1">Average Latency</p>
+                                    <p class="metric-value">{{ "%.2f"|format(data.avg_latency) }}</p>
+                                    <p class="metric-unit">ms</p>
+                                </div>
+                                <div class="mb-3">
+                                    <p class="text-muted mb-1">Throughput</p>
+                                    <p class="metric-value">{{ "%.2f"|format(data.throughput) }}</p>
+                                    <p class="metric-unit">tasks/s</p>
+                                </div>
+                                <div class="mb-3">
+                                    <p class="text-muted mb-1">CPU Utilization</p>
+                                    <p class="metric-value">{{ "%.1f"|format(data.cpu_utilization * 100) }}</p>
+                                    <p class="metric-unit">%</p>
+                                </div>
+                                <div>
+                                    <p class="text-muted mb-1">Completed Tasks</p>
+                                    <p class="metric-value">{{ data.completed_tasks }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- RL Training Results -->
+{% if training_plot %}
+<div class="row mb-5">
+    <div class="col-md-10 offset-md-1">
+        <div class="card bg-dark border-light">
+            <div class="card-header">
+                <h3 class="mb-0">Training Performance</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8 offset-md-2">
+                        <img src="data:image/png;base64,{{ training_plot }}" class="img-fluid" 
+                             alt="Training Rewards Plot">
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <p class="text-center">
+                            The graph above shows how the cumulative reward improved as the RL agent learned
+                            the optimal scheduling policy over training episodes.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Performance Comparison Charts -->
+<div class="row mb-5">
+    <div class="col-md-10 offset-md-1">
+        <div class="card bg-dark border-light">
+            <div class="card-header">
+                <h3 class="mb-0">Performance Comparison</h3>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="chart-container">
+                            <canvas id="latencyChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="chart-container">
+                            <canvas id="throughputChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="chart-container">
+                            <canvas id="utilizationChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8 offset-md-2">
+                        <div class="chart-container" style="height: 400px;">
+                            <canvas id="radarChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Analysis and Insights -->
+<div class="row mb-5">
+    <div class="col-md-10 offset-md-1">
+        <div class="card bg-dark border-light">
+            <div class="card-header">
+                <h3 class="mb-0">Analysis & Insights</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Performance Breakdown</h4>
+                        <p>The reinforcement learning scheduler demonstrates several advantages over traditional scheduling algorithms:</p>
+                        <ul>
+                            <li><strong>Reduced Latency:</strong> Particularly important for high-frequency trading operations where milliseconds matter.</li>
+                            <li><strong>Adaptive Behavior:</strong> The RL scheduler learns to prioritize tasks based on their characteristics and system state.</li>
+                            <li><strong>Resource Efficiency:</strong> Improved CPU utilization balances system load more effectively.</li>
+                        </ul>
+                        
+                        <h4 class="mt-4">When to Use RL Scheduling</h4>
+                        <p>RL-based scheduling is particularly effective for:</p>
+                        <ul>
+                            <li>Workloads with mixed task priorities and execution times</li>
+                            <li>Systems requiring low latency for critical operations</li>
+                            <li>Dynamic environments where task patterns change over time</li>
+                            <li>Applications like high-frequency trading, real-time analytics, and multimedia processing</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <h4>Traditional Schedulers Comparison</h4>
+                        <p>Each traditional scheduler has specific strengths and weaknesses:</p>
+                        
+                        <div class="mb-3">
+                            <h5>First-Come-First-Served (FCFS)</h5>
+                            <p><strong>Strengths:</strong> Simple implementation, fair ordering based on arrival time.<br>
+                            <strong>Weaknesses:</strong> Long tasks can block shorter ones, causing high average wait times.</p>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <h5>Shortest Job First (SJF)</h5>
+                            <p><strong>Strengths:</strong> Minimizes average waiting time across all tasks.<br>
+                            <strong>Weaknesses:</strong> Can lead to starvation of longer tasks, requires knowing job duration in advance.</p>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <h5>Round Robin</h5>
+                            <p><strong>Strengths:</strong> Fair CPU time distribution, good for interactive systems.<br>
+                            <strong>Weaknesses:</strong> Time quantum choice is critical - too small increases context switching overhead, too large approximates FCFS.</p>
+                        </div>
+                        
+                        <h4 class="mt-4">The RL Advantage</h4>
+                        <p>Unlike traditional schedulers, the RL scheduler can learn to combine the strengths of multiple approaches while adapting to the specific workload patterns.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Action Buttons -->
+<div class="row mb-5">
+    <div class="col-md-10 offset-md-1">
+        <div class="d-flex justify-content-between">
+            <div>
+                <a href="{{ url_for('simulation') }}" class="btn btn-outline-primary me-2">
+                    <i class="fas fa-sliders-h me-2"></i>Modify Parameters
+                </a>
+                <button type="button" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#saveResultsModal">
+                    <i class="fas fa-save me-2"></i>Save to Database
+                </button>
+            </div>
+            <div>
+                <a href="{{ url_for('db_management') }}" class="btn btn-outline-secondary me-2">
+                    <i class="fas fa-database me-2"></i>Database Management
+                </a>
+                <a href="{{ url_for('simulation') }}?train=true" class="btn btn-primary">
+                    <i class="fas fa-sync-alt me-2"></i>Run New Simulation
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Save Results Modal -->
+<div class="modal fade" id="saveResultsModal" tabindex="-1" aria-labelledby="saveResultsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title" id="saveResultsModalLabel">Save Current Results</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ url_for('save_current_results') }}" method="post">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="result-config-name" class="form-label">Configuration Name</label>
+                        <input type="text" class="form-control" id="result-config-name" name="config_name" 
+                               value="Simulation {{ now().strftime('%Y-%m-%d %H:%M') }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="result-description" class="form-label">Description</label>
+                        <textarea class="form-control" id="result-description" name="description" rows="3" 
+                                  placeholder="Enter a description of this simulation run..."></textarea>
+                    </div>
+                    <div class="alert alert-info">
+                        All current simulation results will be saved along with the current configuration.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Results</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,134 @@
+{% extends "layout.html" %}
+
+{% block title %}View Configuration{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col">
+            <h1>Configuration Details</h1>
+            <div class="card my-4">
+                <div class="card-header bg-dark text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">{{ config.name }}</h5>
+                        <span class="badge bg-info">{{ config.workload_type }}</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-muted">Created: {{ config.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</h6>
+                    <p class="card-text">{{ config.description }}</p>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <h5>Simulation Parameters</h5>
+                            <table class="table table-striped">
+                                <tr>
+                                    <th>Number of CPUs</th>
+                                    <td>{{ config.num_cpus }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Number of Tasks</th>
+                                    <td>{{ config.num_tasks }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Workload Type</th>
+                                    <td>{{ config.workload_type }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Latency Weight</th>
+                                    <td>{{ config.reward_latency_weight }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Throughput Weight</th>
+                                    <td>{{ config.reward_throughput_weight }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Max Steps</th>
+                                    <td>{{ config.max_steps }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>RL Parameters</h5>
+                            <table class="table table-striped">
+                                <tr>
+                                    <th>Learning Rate</th>
+                                    <td>{{ config.learning_rate }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Gamma (Discount)</th>
+                                    <td>{{ config.gamma }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Initial Epsilon</th>
+                                    <td>{{ config.epsilon }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Epsilon Min</th>
+                                    <td>{{ config.epsilon_min }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Epsilon Decay</th>
+                                    <td>{{ config.epsilon_decay }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Memory Size</th>
+                                    <td>{{ config.memory_size }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Batch Size</th>
+                                    <td>{{ config.batch_size }}</td>
+                                </tr>
+                                <tr>
+                                    <th>RR Time Quantum</th>
+                                    <td>{{ config.time_quantum }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    {% if config.results %}
+                    <h5 class="mt-4">Results</h5>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Scheduler</th>
+                                    <th>Avg Latency</th>
+                                    <th>Throughput</th>
+                                    <th>CPU Utilization</th>
+                                    <th>Total Reward</th>
+                                    <th>Tasks Completed</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for result in config.results %}
+                                <tr>
+                                    <td>{{ result.scheduler_type }}</td>
+                                    <td>{{ result.avg_latency|round(4) }}</td>
+                                    <td>{{ result.throughput|round(4) }}</td>
+                                    <td>{{ (result.cpu_utilization * 100)|round(1) }}%</td>
+                                    <td>{{ result.total_reward|round(2) }}</td>
+                                    <td>{{ result.completed_tasks }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info mt-4">
+                        No results have been saved for this configuration.
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="card-footer">
+                    <a href="{{ url_for('load_config', config_id=config.id) }}" class="btn btn-primary">Load Configuration</a>
+                    <a href="{{ url_for('db_management') }}" class="btn btn-secondary">Back to Database</a>
+                    <a href="{{ url_for('delete_config', config_id=config.id) }}" class="btn btn-danger float-end" 
+                       onclick="return confirm('Are you sure you want to delete this configuration?');">Delete</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
