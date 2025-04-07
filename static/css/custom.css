@@ -209,3 +209,21 @@
 .timeline-event.task-completed {
     background-color: var(--bs-success);
 }
+
+
+
+  #reward_latency_weight_slider::-webkit-slider-runnable-track {
+    height: 8px;
+    background: linear-gradient(to right, #5a5a5a, #415e69); 
+    border-radius: 5px;
+  }
+  
+  #reward_latency_weight_slider::-moz-range-track {
+    height: 8px;
+    background: linear-gradient(to right, #5a5a5a, #415e69);
+    border-radius: 5px;
+  }
+  
+
+ 
+  
