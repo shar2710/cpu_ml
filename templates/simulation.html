@@ -13,9 +13,9 @@
 {% if train %}
 <div class="row">
     <div class="col-md-8 offset-md-2">
-        <div class="card bg-dark border-light">
-            <div class="card-body">
-                <h2 class="card-title mb-4">Train RL Scheduler</h2>
+        <div class="card1">
+            <div class="card1-body">
+                <h2 class="card1-title">Train RL Scheduler</h2>
                 
                 <div id="form_error" class="alert alert-danger d-none" role="alert"></div>
                 
@@ -34,7 +34,7 @@
                     </div>
                     
                     <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-primary btn-lg" onclick="startTraining()">
+                        <button type="submit" class="btn-home" onclick="startTraining()">
                             <i class="fas fa-play-circle me-2"></i>Start Training
                         </button>
                     </div>
@@ -63,17 +63,16 @@
 </div>
 
 {% else %}
-<!-- Simulation Configuration Form -->
+
 <div class="row">
     <div class="col-md-10 offset-md-1">
-        <div class="card bg-dark border-light">
-            <div class="card-body">
+        <div class="card1">
+            <div class="card1-body">
                 <h2 class="card-title mb-4">Simulation Configuration</h2>
                 
                 <div id="form_error" class="alert alert-danger d-none" role="alert"></div>
                 
                 <form id="simulation_form" action="{{ url_for('simulation') }}" method="post">
-                    <!-- Environment Parameters -->
                     <div class="form-section">
                         <h4 class="form-section-title">Environment Parameters</h4>
                         
@@ -209,8 +208,8 @@
                         </div>
                     </div>
                     
-                    <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-primary btn-lg">
+                    <div class="keyboard-keys">
+                        <button type="submit" class="btn-home">
                             <i class="fas fa-cogs me-2"></i>Initialize Simulation
                         </button>
                     </div>

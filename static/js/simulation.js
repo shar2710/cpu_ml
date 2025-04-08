@@ -1,12 +1,9 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Check if we're on a page with the simulation form
     const simulationForm = document.getElementById('simulation_form');
-    if (!simulationForm) return; // Don't run simulation JS on other pages
-    
-    // Initialize form elements with default values
+    if (!simulationForm) return; 
     initFormValues();
     
-    // Add event listeners for form updates
+   
     setupFormListeners();
     
     // Add form validation

@@ -13,9 +13,9 @@
 <!-- Key Metrics Overview -->
 <div class="row mb-5">
     <div class="col-md-10 offset-md-1">
-        <div class="card bg-dark border-light">
-            <div class="card-header">
-                <h3 class="mb-0">Key Performance Metrics</h3>
+        <div class="card1">
+            <div class="card1-title">
+                <h2>Key Performance Metrics</h2>
             </div>
             <div class="card-body">
                 <div class="row">
@@ -57,20 +57,20 @@
 {% if training_plot %}
 <div class="row mb-5">
     <div class="col-md-10 offset-md-1">
-        <div class="card bg-dark border-light">
-            <div class="card-header">
-                <h3 class="mb-0">Training Performance</h3>
+        <div class="card1">
+            <div class="card1-body">
+                <h2>Training Performance</h2>
             </div>
-            <div class="card-body">
+            <div class="card1-body">
                 <div class="row">
                     <div class="col-md-8 offset-md-2">
                         <img src="data:image/png;base64,{{ training_plot }}" class="img-fluid" 
                              alt="Training Rewards Plot">
                     </div>
                 </div>
-                <div class="row mt-4">
-                    <div class="col-12">
-                        <p class="text-center">
+                <div class="card1-title
+                    <div class="card1-body">
+                        <p class="text-gray-800">
                             The graph above shows how the cumulative reward improved as the RL agent learned
                             the optimal scheduling policy over training episodes.
                         </p>
@@ -85,9 +85,9 @@
 <!-- Performance Comparison Charts -->
 <div class="row mb-5">
     <div class="col-md-10 offset-md-1">
-        <div class="card bg-dark border-light">
-            <div class="card-header">
-                <h3 class="mb-0">Performance Comparison</h3>
+        <div class="card1">
+            <div class="card1-body">
+                <h2>Performance Comparison</h2>
             </div>
             <div class="card-body">
                 <div class="row mb-4">
@@ -119,64 +119,6 @@
     </div>
 </div>
 
-<!-- Analysis and Insights -->
-<div class="row mb-5">
-    <div class="col-md-10 offset-md-1">
-        <div class="card bg-dark border-light">
-            <div class="card-header">
-                <h3 class="mb-0">Analysis & Insights</h3>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <h4>Performance Breakdown</h4>
-                        <p>The reinforcement learning scheduler demonstrates several advantages over traditional scheduling algorithms:</p>
-                        <ul>
-                            <li><strong>Reduced Latency:</strong> Particularly important for high-frequency trading operations where milliseconds matter.</li>
-                            <li><strong>Adaptive Behavior:</strong> The RL scheduler learns to prioritize tasks based on their characteristics and system state.</li>
-                            <li><strong>Resource Efficiency:</strong> Improved CPU utilization balances system load more effectively.</li>
-                        </ul>
-                        
-                        <h4 class="mt-4">When to Use RL Scheduling</h4>
-                        <p>RL-based scheduling is particularly effective for:</p>
-                        <ul>
-                            <li>Workloads with mixed task priorities and execution times</li>
-                            <li>Systems requiring low latency for critical operations</li>
-                            <li>Dynamic environments where task patterns change over time</li>
-                            <li>Applications like high-frequency trading, real-time analytics, and multimedia processing</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="col-md-6">
-                        <h4>Traditional Schedulers Comparison</h4>
-                        <p>Each traditional scheduler has specific strengths and weaknesses:</p>
-                        
-                        <div class="mb-3">
-                            <h5>First-Come-First-Served (FCFS)</h5>
-                            <p><strong>Strengths:</strong> Simple implementation, fair ordering based on arrival time.<br>
-                            <strong>Weaknesses:</strong> Long tasks can block shorter ones, causing high average wait times.</p>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <h5>Shortest Job First (SJF)</h5>
-                            <p><strong>Strengths:</strong> Minimizes average waiting time across all tasks.<br>
-                            <strong>Weaknesses:</strong> Can lead to starvation of longer tasks, requires knowing job duration in advance.</p>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <h5>Round Robin</h5>
-                            <p><strong>Strengths:</strong> Fair CPU time distribution, good for interactive systems.<br>
-                            <strong>Weaknesses:</strong> Time quantum choice is critical - too small increases context switching overhead, too large approximates FCFS.</p>
-                        </div>
-                        
-                        <h4 class="mt-4">The RL Advantage</h4>
-                        <p>Unlike traditional schedulers, the RL scheduler can learn to combine the strengths of multiple approaches while adapting to the specific workload patterns.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
 <!-- Action Buttons -->
 <div class="row mb-5">

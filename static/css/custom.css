@@ -70,7 +70,10 @@
 .range-slider {
     width: 100%;
 }
-
+.form-text{
+    font-size: 0.9rem;
+    color: var(--bs-secondary);
+}
 .form-section {
     margin-bottom: 2rem;
     padding-bottom: 1rem;
