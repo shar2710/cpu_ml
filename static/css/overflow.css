@@ -633,3 +633,45 @@ body {
     
     margin-top: auto;
   }
+
+  .card1{
+    background-color: #b2cfe2;
+    color: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+    border: 1px solid var(--border-color);
+  }
+
+  .card1-body {
+   
+   color: #001122;
+
+  }
+
+  @keyframes bounce {
+    0%   { transform: scale(1); }
+    50%  { transform: scale(1.1); }
+    70%  { transform: scale(0.98); }
+    100% { transform: scale(1.05); }
+  }
+  
+  .btn-home {
+    background-color: #001122;
+    color: white;
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .btn-home:hover {
+    background-color: var(--primary-blue);
+    animation: bounce 0.4s ease forwards;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  }
+  
